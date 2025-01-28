@@ -14,17 +14,24 @@ export const register = async (username , email , password) => {
         throw new Error("email already exist")
     }
 
+    const token = await user.generateTokens()
+
+    if (!token) {
+        throw new Error("Problem in generating tokens.")
+    }
+
     const userData = await userModel.create({
         username : username,
         email : email,
-        password : password
+        password : password,
+        token : token
     })
 
     if (!userData) {
         throw new Error("Something went wrong while creating the user..")
     }
 
-    return userData
+    return {userData , token}
 
 }
 

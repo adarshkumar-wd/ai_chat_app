@@ -24,9 +24,21 @@ export const registerUser = async (req , res) => {
             res.status(404).json({success : false , message : "password is required"})
         }
     
-        const user = await register(username , email , password)
+        const {userData , token} = await register(username , email , password)
 
-        res.status(200).json({success : true , user : user , message : "user created successfully."})
+        const options = {
+            httpOnly : true,
+            scure : false
+        }
+
+        res
+           .status(200)
+           .cookie("token" , token , options)
+           .json(
+            {
+                success : true ,
+                user : userData ,
+                message : "user created successfully."})
 
     } catch (error) {
         res.status(400).json({success : false , message : error.message || "Something went wrong while creating the user.." })
