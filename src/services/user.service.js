@@ -60,7 +60,7 @@ export const login = async (email , username , password) => {
         user.token = token
         user.save({validateBeforeSave : false})
 
-        const userData = await userModel.findOne({username})
+        const userData = await userModel.findOne({username}).select("-password -token")
 
         return {userData , token}
 
@@ -87,7 +87,7 @@ export const login = async (email , username , password) => {
         user.token = token
         user.save({validateBeforeSave : false})
 
-        const userData = await userModel.findOne({email})
+        const userData = await userModel.findOne({email}).select("-password -token")
 
         return {userData , token}
 

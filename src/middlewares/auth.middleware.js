@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import userModel from "../models/user.model.js"
+import {userModel} from "../models/user.model.js"
 
 export const authUser =  async (req , res , next) => {
 
@@ -17,7 +17,7 @@ export const authUser =  async (req , res , next) => {
             res.status(400).json({success : false , message : "Incorrect Token"})
         }
 
-        const userData = await userModel.findOne({"_id" : decodedToken._id});
+        const userData = await userModel.findOne({"_id" : decodedToken._id}).select("-password -token")
 
         if (!userData) {
             res.status(400).json({status : false , message : "Invalid token ! user not found." })

@@ -98,3 +98,7 @@ export const loginUser = async (req , res) => {
             )
     }
 }
+
+export const userProfile = async (req , res) => {
+    res.status(200).json({success : true , user : req?.user , message : "userData fetched successfully."})
+}
