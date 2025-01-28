@@ -27,3 +27,62 @@ export const register = async (username , email , password) => {
     return userData
 
 }
+
+export const login = async (email , username , password) => {
+    
+    if (email == "not@req.com"){
+
+        const user = await userModel.findOne({username})
+
+        if (!user) {
+            throw new Error("user not exist..")
+        }
+
+        const isPasswordCorrect =  await user.isPasswordCorrect(password)
+
+        if (!isPasswordCorrect) {
+            throw new Error("wrong password.")
+        }
+
+        const token = await user.generateTokens()
+
+        if (!token) {
+            throw new Error("Problem in generating tokens.")
+        }
+
+        user.token = token
+        user.save({validateBeforeSave : false})
+
+        const userData = await userModel.findOne({username})
+
+        return {userData , token}
+
+    } else {
+
+        const user = await userModel.findOne({email})
+
+        if (!user) {
+            throw new Error("user not exist.")
+        }
+
+        const isPasswordCorrect = await user.isPasswordCorrect(password)
+
+        if (!isPasswordCorrect) {
+            throw new Error("wrong password.")
+        }
+
+        const token = await user.generateTokens()
+
+        if (!token) {
+            throw new Error("Problem in generating tokens.")
+        }
+
+        user.token = token
+        user.save({validateBeforeSave : false})
+
+        const userData = await userModel.findOne({email})
+
+        return {userData , token}
+
+    }
+}
