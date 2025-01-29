@@ -6,22 +6,22 @@ export const registerUser = async (req , res) => {
     const error = validationResult(req)
 
     if (!error.isEmpty()) {
-        res.status(400).json({success : false , message : error.array()[0].msg || "please provide valide data"})
+        return res.status(400).json({success : false , message : error.array()[0].msg || "please provide valide data"})
     }
 
     try {
         const {username , email , password} = req.body
     
         if (!username) {
-            res.status(404).json({success : false , message : "username is required"})
+            return res.status(404).json({success : false , message : "username is required"})
         }
     
         if (!email) {
-            res.status(404).json({success : false , message : "email is required"})
+            return res.status(404).json({success : false , message : "email is required"})
         }
     
         if (!password) {
-            res.status(404).json({success : false , message : "password is required"})
+            return res.status(404).json({success : false , message : "password is required"})
         }
     
         const {userData , token} = await register(username , email , password)
@@ -31,7 +31,7 @@ export const registerUser = async (req , res) => {
             scure : false
         }
 
-        res
+        return res
            .status(200)
            .cookie("token" , token , options)
            .json(
@@ -41,7 +41,7 @@ export const registerUser = async (req , res) => {
                 message : "user created successfully."})
 
     } catch (error) {
-        res.status(400).json({success : false , message : error.message || "Something went wrong while creating the user.." })
+        return res.status(400).json({success : false , message : error.message || "Something went wrong while creating the user.." })
     }
 }
 
@@ -50,7 +50,7 @@ export const loginUser = async (req , res) => {
     const error = validationResult(req)
 
     if (!error.isEmpty()) {
-        res.status(400).json({success : false , message : error.array()[0].msg || "Please provide valide data"})
+        return res.status(400).json({success : false , message : error.array()[0].msg || "Please provide valide data"})
     }
 
     try {
@@ -58,15 +58,15 @@ export const loginUser = async (req , res) => {
         const {email , username , password} = req.body
 
         if (email == "not@req.com" && !username) {
-            res.status(400).json({success : false , message : "username is required."})
+            return res.status(400).json({success : false , message : "username is required."})
         }
 
         if (username == "not-req" && !email) {
-            res.status(400).json({success : false , message : "email is required."})
+            return res.status(400).json({success : false , message : "email is required."})
         }
 
         if (!password) {
-            res.status(400).json({status : false , message : "password is required."})
+           return res.status(400).json({status : false , message : "password is required."})
         }
 
         const {userData , token} = await login(email , username , password)
@@ -100,7 +100,7 @@ export const loginUser = async (req , res) => {
 }
 
 export const userProfile = async (req , res) => {
-    res.status(200).json({success : true , user : req?.user , message : "userData fetched successfully."})
+    return res.status(200).json({success : true , user : req?.user , message : "userData fetched successfully."})
 }
 
 export const logoutUser = async (req , res) => {
@@ -109,7 +109,7 @@ export const logoutUser = async (req , res) => {
         const user = req?.user
 
         if (!user) {
-            res.status(200).json({success : false , message : "Unauthorised user.."})
+            return res.status(200).json({success : false , message : "Unauthorised user.."})
         }
 
         user.token = ""
@@ -119,7 +119,7 @@ export const logoutUser = async (req , res) => {
             secure : false
         }
 
-        res
+        return res
             .status(200)
             .clearCookie("token" , options)
             .json(
@@ -130,7 +130,7 @@ export const logoutUser = async (req , res) => {
             )
 
     } catch (error) {
-        
+        return res.status(400).json({success : true , message : error.message || "something went wrong.."})
     }
 
 }
