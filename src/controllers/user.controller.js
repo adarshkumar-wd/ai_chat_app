@@ -102,3 +102,35 @@ export const loginUser = async (req , res) => {
 export const userProfile = async (req , res) => {
     res.status(200).json({success : true , user : req?.user , message : "userData fetched successfully."})
 }
+
+export const logoutUser = async (req , res) => {
+
+    try {
+        const user = req?.user
+
+        if (!user) {
+            res.status(200).json({success : false , message : "Unauthorised user.."})
+        }
+
+        user.token = ""
+
+        const options = {
+            httpOnly : true,
+            secure : false
+        }
+
+        res
+            .status(200)
+            .clearCookie("token" , options)
+            .json(
+                {
+                    success : true,
+                    message : "User logout successfully."
+                }
+            )
+
+    } catch (error) {
+        
+    }
+
+}
