@@ -1,5 +1,5 @@
 import { validationResult } from "express-validator"
-import { register , login } from "../services/user.service.js"
+import { register , login, tokenVerification } from "../services/user.service.js"
 
 export const registerUser = async (req , res) => {
 
@@ -35,10 +35,12 @@ export const registerUser = async (req , res) => {
            .status(200)
            .cookie("token" , token , options)
            .json(
-            {
-                success : true ,
-                user : userData ,
-                message : "user created successfully."})
+                {
+                    success : true ,
+                    user : userData ,
+                    message : "user created successfully."
+                }
+            )
 
     } catch (error) {
         return res.status(400).json({success : false , message : error.message || "Something went wrong while creating the user.." })
@@ -132,5 +134,23 @@ export const logoutUser = async (req , res) => {
     } catch (error) {
         return res.status(400).json({success : true , message : error.message || "something went wrong.."})
     }
+
+}
+
+export const verifyToken = async (req , res) => {
+
+    const token = req.cookies?.token || req.header("Authorization").split(" ")[1]
+
+    if (!token) {
+        return res.status(400).json({success : false , message : "Unauthorised user"})
+    }
+
+    const verify = await tokenVerification(token)
+
+    if (!verify) {
+        return res.status(400).json({success : false , message : "Invalid Token"})
+    }
+
+    return res.status(200).json({success : true , message : "Authenticated user.."})
 
 }
