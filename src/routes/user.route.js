@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { registerUser , loginUser, userProfile, logoutUser, verifyToken } from "../controllers/user.controller.js";
+import { registerUser , loginUser, userProfile, logoutUser, verifyToken, getAllUsers } from "../controllers/user.controller.js";
 import { authUser } from "../middlewares/auth.middleware.js";
 
 const router = Router()
@@ -57,6 +57,8 @@ router.get("/profile" , authUser , userProfile)
 
 router.get("/logout" , authUser , logoutUser)
 
-router.get("/verify-token" , authUser , verifyToken)
+router.get("/verify-token" , verifyToken)
+
+router.get("/all-users" , authUser , getAllUsers)
 
 export default router

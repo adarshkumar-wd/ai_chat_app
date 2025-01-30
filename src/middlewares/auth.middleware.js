@@ -5,7 +5,7 @@ export const authUser =  async (req , res , next) => {
 
     try {
         
-        const token = req.cookies?.token || req.header('Authorization')?.split(" ")[1]
+        const token = req.cookies?.token
 
         if (!token) {
             res.status(400).json({success : false , message : "UnAuthorised user"})

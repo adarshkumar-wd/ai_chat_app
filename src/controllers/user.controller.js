@@ -1,5 +1,5 @@
 import { validationResult } from "express-validator"
-import { register , login, tokenVerification } from "../services/user.service.js"
+import { register , login, tokenVerification , findUsers } from "../services/user.service.js"
 
 export const registerUser = async (req , res) => {
 
@@ -139,7 +139,7 @@ export const logoutUser = async (req , res) => {
 
 export const verifyToken = async (req , res) => {
 
-    const token = req.cookies?.token || req.header("Authorization").split(" ")[1]
+    const token = req.cookies?.token
 
     if (!token) {
         return res.status(400).json({success : false , message : "Unauthorised user"})
@@ -152,5 +152,20 @@ export const verifyToken = async (req , res) => {
     }
 
     return res.status(200).json({success : true , message : "Authenticated user.."})
+
+}
+
+export const getAllUsers = async (req , res) => {
+
+    const user = req?.user
+
+    if (!user) {
+        return res.status(400).json({success : true , message : "unAuthorised user"})
+    }
+
+    const users = await findUsers(user._id)
+
+    return res.status(200).json({success : true , users : users , message : "Users fetched successfully."})
+
 
 }

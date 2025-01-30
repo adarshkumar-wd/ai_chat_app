@@ -121,3 +121,15 @@ export const tokenVerification = async (token) => {
     return true
 
 }
+
+export const findUsers = async (userId) => {
+
+    const users = await userModel.find({"_id" : {$ne : userId}}).select("-token -password")
+
+    if (!users) {
+        throw new Error("users not found..")
+    }
+
+    return users
+
+}
