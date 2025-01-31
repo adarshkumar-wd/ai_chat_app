@@ -1,4 +1,5 @@
-import { create , getAllProjectsByUserId } from "../services/project.service.js"
+import mongoose , {isValidObjectId} from "mongoose"
+import { create , getAllProjectsByUserId , addUser } from "../services/project.service.js"
 
 export const createProject = async (req , res) => {
     const {projectName} = req.body
@@ -38,6 +39,35 @@ export const getAllProjects = async (req , res) => {
 
     } catch (error) {
         
+    }
+
+}
+
+export const addUserToProject = async (req , res) => {
+
+    const {username} = req?.user
+    const {projectId} = req.params
+
+    if (!projectId || !isValidObjectId(projectId)) {
+        return res.status(400).json({success : false , message : "Please provide valid projectId"})
+    }
+
+    if (!username) {
+        return res.status(400).json({success : false , message : "username required.."})
+    }
+
+    try {
+
+        const project = await addUser(username , projectId)
+
+        if (!project) {
+            return res.status(500).json({success : false , message : "something went wrong! while adding user"})
+        }
+
+        return res.status(200).json({success : true , message : "User added successfully.."})
+
+    } catch (error) {
+        return res.status(400).json({success : false , message : error.message || "Not able to add user! Server error"})
     }
 
 }

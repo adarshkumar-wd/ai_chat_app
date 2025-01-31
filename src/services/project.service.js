@@ -1,4 +1,5 @@
 import { projectModel } from "../models/product.model.js"
+import {userModel} from "../models/user.model.js"
 
 export const create = async (projectName , userId) => {
 
@@ -42,4 +43,30 @@ export const getAllProjectsByUserId = async (userId) => {
         throw new Error(error.message || "Server error! while fetching the product..")
     }
     
+}
+
+export const addUser = async (username , projectId) => {
+
+    try {
+        
+        const user = await userModel.findOne({"username" : username})
+
+        if (!user) {
+            throw new Error("User not exist..")
+        }
+
+        const project = await projectModel.findById(projectId)
+
+        if (!project) {
+            throw new Error("Provide valid project id..")
+        }
+
+        project.users.push(user._id)
+        project.save({validateBeforeSave : false})
+
+        return true
+
+    } catch (error) {
+        throw new Error(error.message)
+    }
 }
