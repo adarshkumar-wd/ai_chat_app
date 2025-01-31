@@ -1,5 +1,5 @@
 import mongoose , {isValidObjectId} from "mongoose"
-import { create , getAllProjectsByUserId , addUser , fetchUers } from "../services/project.service.js"
+import { create , getAllProjectsByUserId , addUser , fetchUers , removeUser } from "../services/project.service.js"
 
 export const createProject = async (req , res) => {
     const {projectName} = req.body
@@ -88,6 +88,30 @@ export const getAllUsersOfProject = async (req , res) => {
 
     } catch (error) {
         return res.status(404).json({success : false , message : error.message || "Server error! while fetching the users"})
+    }
+
+}
+
+export const removeUserFromProject = async (req , res) => {
+
+    const {projectId , userId} = req.params
+
+    if (!projectId || !userId || !isValidObjectId(projectId) || !isValidObjectId(userId)) {
+        return res.status(400).json({success : true , message : "Plase provide valid Id's"})
+    }
+
+    try {
+        
+        const newUsers = await removeUser(projectId , userId)
+
+        if (!newUsers) {
+            return res.status(400).json({success : false , message : "server error! user not removed"})
+        }
+
+        return res.status(200).json({success : true , newUsers : newUsers , message : "user removed successfully.."})
+
+    } catch (error) {
+        return res.status(400).json({success : false , message : error.message || "server error! user not removed.."})
     }
 
 }

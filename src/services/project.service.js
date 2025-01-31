@@ -88,3 +88,31 @@ export const fetchUers = async (projectId) => {
     return project.users
 
 }
+
+export const removeUser = async (projectId , userId) => {
+
+    try {
+        const project = await projectModel.findById(projectId)
+    
+        if (!project) {
+            throw new Error("Project not available..")
+        }
+    
+        const user = await userModel.findById(userId)
+    
+        if (!user) {
+            throw new Error("Invalid user..")
+        }
+    
+        const newUsers = project.users.filter(user => !user.equals(userId))
+    
+        project.users = newUsers
+        project.save({validateBeforeSave : false})
+    
+        return newUsers
+
+    } catch (error) {
+        throw new Error(error.message)
+    }
+
+}
