@@ -10,7 +10,7 @@ const projectSchema = new mongoose.Schema({
 
     users : [{
         type : mongoose.Schema.ObjectId,
-        ref : userModel
+        ref : "user"
     }]
 
 } , {timestamps : true})

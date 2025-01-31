@@ -1,11 +1,11 @@
-import { projectModel } from "../models/product.model";
+import { projectModel } from "../models/product.model.js"
 
-export const create = async (projectName) => {
+export const create = async (projectName , userId) => {
 
     try {
         const existProject = await projectModel.findOne({"name" : projectName})
 
-        if (!existProject) {
+        if (existProject) {
             throw new Error("Project name already exist..")
         }
 
@@ -14,9 +14,13 @@ export const create = async (projectName) => {
             users : []
         })
 
+
         if (!project) {
             throw new Error("server error while creating product !")
         }
+        
+        project.users.push(userId)
+        project.save({validateBeforeUse : false})
 
         return project
 
@@ -24,4 +28,18 @@ export const create = async (projectName) => {
         throw new Error(error.message)
     }
 
+}
+
+export const getAllProjectsByUserId = async (userId) => {
+
+    try {
+        console.log(userId)
+        const projects = await projectModel.find({"users" : userId})
+
+        return projects
+
+    } catch (error) {
+        throw new Error(error.message || "Server error! while fetching the product..")
+    }
+    
 }
