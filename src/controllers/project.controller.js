@@ -1,5 +1,5 @@
 import mongoose , {isValidObjectId} from "mongoose"
-import { create , getAllProjectsByUserId , addUser } from "../services/project.service.js"
+import { create , getAllProjectsByUserId , addUser , fetchUers } from "../services/project.service.js"
 
 export const createProject = async (req , res) => {
     const {projectName} = req.body
@@ -45,7 +45,7 @@ export const getAllProjects = async (req , res) => {
 
 export const addUserToProject = async (req , res) => {
 
-    const {username} = req?.user
+    const {username} = req.body
     const {projectId} = req.params
 
     if (!projectId || !isValidObjectId(projectId)) {
@@ -68,6 +68,26 @@ export const addUserToProject = async (req , res) => {
 
     } catch (error) {
         return res.status(400).json({success : false , message : error.message || "Not able to add user! Server error"})
+    }
+
+}
+
+export const getAllUsersOfProject = async (req , res) => {
+
+    const {projectId} = req?.params
+
+    if (!projectId || !isValidObjectId(projectId)) {
+        return res.status(400).json({success : false , message : "Please provide valid id.."})
+    }
+
+    try {
+        
+        const users = await fetchUers(projectId)
+
+        return res.status(200).json({success : true , users , message : "Users fetched succesfully.."})
+
+    } catch (error) {
+        return res.status(404).json({success : false , message : error.message || "Server error! while fetching the users"})
     }
 
 }

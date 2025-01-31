@@ -58,7 +58,13 @@ export const addUser = async (username , projectId) => {
         const project = await projectModel.findById(projectId)
 
         if (!project) {
-            throw new Error("Provide valid project id..")
+            throw new Error("Provide valid project id..! project not available")
+        }
+
+        const alreadyExistUser = await projectModel.findOne({"_id" : projectId , "users" : user._id})
+
+        if (alreadyExistUser) {
+            throw new Error("user already available..")
         }
 
         project.users.push(user._id)
@@ -69,4 +75,16 @@ export const addUser = async (username , projectId) => {
     } catch (error) {
         throw new Error(error.message)
     }
+}
+
+export const fetchUers = async (projectId) => {
+
+    const project = await projectModel.findById(projectId)
+
+    if (!project) {
+        throw new Error("Project not found..")
+    }
+
+    return project.users
+
 }
