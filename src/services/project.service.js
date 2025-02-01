@@ -61,6 +61,12 @@ export const addUser = async (username , projectId) => {
             throw new Error("Provide valid project id..! project not available")
         }
 
+        const userInProject = await projectModel.findOne({"_id" : projectId , "users" : user_id})
+
+        if (!userInProject) {
+            throw new Error("User not belong to this project")
+        }
+
         const alreadyExistUser = await projectModel.findOne({"_id" : projectId , "users" : user._id})
 
         if (alreadyExistUser) {
@@ -102,6 +108,12 @@ export const removeUser = async (projectId , userId) => {
     
         if (!user) {
             throw new Error("Invalid user..")
+        }
+
+        const userInProject = await projectModel.findOne({"_id" : projectId , "users" : user_id})
+
+        if (!userInProject) {
+            throw new Error("User not belong to this project")
         }
     
         const newUsers = project.users.filter(user => !user.equals(userId))
