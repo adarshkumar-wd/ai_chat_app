@@ -128,3 +128,21 @@ export const removeUser = async (projectId , userId) => {
     }
 
 }
+
+export const fetchDetails = async (projectId) => {
+
+    try {
+        
+        const projectDeatils = await projectModel.findById(projectId)
+
+        if (!projectDeatils) {
+            throw new Error("Project Does't exist..")
+        }
+
+        return projectDeatils
+
+    } catch (error) {
+        throw new Error(error.message || "Server error! project data not fetched..")
+    }
+
+}
